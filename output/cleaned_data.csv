@@ -1,0 +1,9 @@
+employee_id,name,age,department,salary,years_experience,performance_score
+1,Alice,25.0,Sales,50000.0,2,85.0
+2,Bob,30.0,Engineering,65000.0,5,92.0
+3,Charlie,35.0,Sales,55000.0,8,88.0
+4,David,28.0,Marketing,52000.0,3,78.0
+5,Eve,31.0,Engineering,55500.0,4,90.0
+7,Grace,32.0,Sales,61000.0,6,87.0
+10,Jack,33.0,Sales,56000.0,7,84.0
+11,Kelly,29.0,HR,53000.0,4,89.0

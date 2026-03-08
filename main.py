@@ -1,69 +1,41 @@
 """
 Multi-Agent Data Analysis System
-Main entry point for testing API connection
+Main entry point - orchestrates all agents to analyze datasets
 """
 
-import os
-from dotenv import load_dotenv
-from anthropic import Anthropic
+import sys
+from orchestrator import DataAnalysisOrchestrator
 
-def test_api_connection():
-    """Test the Anthropic API connection"""
+
+def main():
+    """Run the multi-agent data analysis system"""
     
-    # Load environment variables
-    load_dotenv()
+    # Check if user provided a dataset path
+    if len(sys.argv) > 1:
+        data_path = sys.argv[1]
+    else:
+        # Use default sample data
+        data_path = "data/sample_data.csv"
+        print("ℹ️  No dataset specified. Using default: data/sample_data.csv")
+        print("   To analyze your own data: python main.py path/to/your/data.csv\n")
     
-    # Get API key
-    api_key = os.getenv("ANTHROPIC_API_KEY")
-    
-    if not api_key:
-        print("❌ ERROR: ANTHROPIC_API_KEY not found in .env file")
-        print("Please add your API key to the .env file")
-        return False
-    
-    print("🔑 API Key found!")
-    print(f"Key prefix: {api_key[:8]}...")
+    # Initialize and run orchestrator
+    orchestrator = DataAnalysisOrchestrator()
     
     try:
-        # Initialize client
-        client = Anthropic(api_key=api_key)
+        results = orchestrator.analyze(data_path)
         
-        print("\n🤖 Testing API connection...")
+        print("\n✅ SUCCESS! Analysis complete.")
+        print(f"\n📊 View your report: {results['report_path']}")
         
-        # Make a simple test call
-        message = client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=100,
-            messages=[
-                {
-                    "role": "user",
-                    "content": "Reply with just: 'Connection successful!'"
-                }
-            ]
-        )
-        
-        response_text = message.content[0].text
-        
-        print(f"✅ API Response: {response_text}")
-        print(f"📊 Tokens used: {message.usage.input_tokens} input, {message.usage.output_tokens} output")
-        print("\n🎉 SUCCESS! Your environment is set up correctly.")
-        print("You're ready to build the multi-agent system!\n")
-        
-        return True
-        
+    except FileNotFoundError:
+        print(f"\n❌ ERROR: File not found: {data_path}")
+        print("Please check the file path and try again.")
+        sys.exit(1)
     except Exception as e:
         print(f"\n❌ ERROR: {str(e)}")
-        print("\nTroubleshooting:")
-        print("1. Check your API key is correct in .env")
-        print("2. Verify you have API credits at console.anthropic.com")
-        print("3. Check your internet connection")
-        return False
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("Multi-Agent Data Analysis System - Connection Test")
-    print("=" * 60)
-    print()
-    
-    test_api_connection()
+    main()
